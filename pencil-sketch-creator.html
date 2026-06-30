@@ -273,3 +273,167 @@ button.generate{
   }
 
   .draw
+85%{ top:45%; left:50%; transform:rotate(-40deg); opacity:1; }
+    100%{ top:45%; left:50%; transform:rotate(-40deg); opacity:0; }
+  }
+
+  .drawing-caption{
+    font-family:'Architects Daughter', cursive;
+    color:var(--pencil);
+    font-size:1rem;
+    margin-top:12px;
+  }
+
+  .actions{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-top:18px;
+    flex-wrap:wrap;
+  }
+
+  .actions button{
+    padding:10px 18px;
+    border:1.5px solid var(--graphite);
+    background:#fff;
+    color:var(--graphite);
+    border-radius:20px;
+    font-size:0.85rem;
+    cursor:pointer;
+    font-weight:600;
+  }
+
+  .actions button:hover{ background:var(--graphite); color:var(--paper); }
+
+  .history{
+    margin-top:32px;
+  }
+
+  .history h3{
+    font-family:'Architects Daughter', cursive;
+    font-size:1.1rem;
+    color:var(--pencil);
+    margin-bottom:10px;
+    text-align:center;
+  }
+
+  .history-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+  }
+
+  .history-grid img{
+    width:100%;
+    aspect-ratio:1;
+    object-fit:cover;
+    border-radius:3px;
+    border:1.5px solid var(--line);
+    cursor:pointer;
+    transition:border-color 0.15s;
+  }
+
+  .history-grid img:hover{ border-color:var(--blueline); }
+
+  footer{
+    text-align:center;
+    margin-top:36px;
+    color:var(--pencil-light);
+    font-size:0.78rem;
+  }
+
+  @media (max-width:420px){
+    h1{ font-size:1.7rem; }
+    .card{ padding:16px; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <span class="pencil-icon">✏️</span>
+    <h1>Pencil Sketch Creator</h1>
+    <p class="subtitle">Describe your idea, and AI will turn it into a sketch or a full color image</p>
+  </header>
+
+  <div class="card">
+
+    <label for="prompt">What would you like to create?</label>
+    <textarea id="prompt" placeholder="e.g. An old man drinking tea, a village house near the mountains..."></textarea>
+
+    <label style="margin-top:16px;">Art Style</label>
+    <div class="style-chips" id="styleChips">
+      <div class="chip active" data-style="pencil sketch, graphite drawing, detailed shading, hand drawn, black and white" data-colored="false">Graphite Pencil</div>
+      <div class="chip" data-style="charcoal sketch drawing, dramatic shading, artistic, black and white" data-colored="false">Charcoal</div>
+      <div class="chip" data-style="ink pen sketch, cross hatching, line art, detailed" data-colored="false">Pen Sketch</div>
+      <div class="chip" data-style="colored pencil sketch, soft shading, artistic illustration" data-colored="false">Colored Pencil</div>
+      <div class="chip" data-style="watercolor pencil sketch, soft tones, artistic" data-colored="false">Watercolor</div>
+      <div class="chip" data-style="photorealistic, DSLR photograph, sharp focus, natural lighting, highly detailed, realistic colors" data-colored="true">Realistic Photo</div>
+      <div class="chip" data-style="oil painting, rich vivid colors, painterly brush strokes, fine art, detailed, masterpiece" data-colored="true">Oil Painting</div>
+    </div>
+
+    <div class="row" id="sizeRow">
+      <div class="field">
+        <label>Size</label>
+        <select id="size">
+          <option value="1024x1024">Square (1024×1024)</option>
+          <option value="1024x1536">Portrait (1024×1536)</option>
+          <option value="1536x1024">Landscape (1536×1024)</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="generate" id="genBtn" onclick="generateSketch()">Generate Sketch</button>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="result-area" id="resultArea"></div>
+
+  <div class="history" id="historySection" style="display:none;">
+    <h3>Recent Sketches</h3>
+    <div class="history-grid" id="historyGrid"></div>
+  </div>
+
+  <footer>
+    Powered by free public AI image generation • No login required
+  </footer>
+
+</div>
+
+<script>
+let history = [];
+
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+});
+
+function isColoredStyle(){
+  const active = document.querySelector('.chip.active');
+  return active ? active.dataset.colored === 'true' : false;
+}
+
+function getActiveStyle(){
+  const active = document.querySelector('.chip.active');
+  return active ? active.dataset.style : 'pencil sketch, graphite drawing, detailed shading';
+}
+
+function setStatus(msg, isError){
+  const el = document.getElementById('status');
+  el.innerHTML = msg;
+  el.className = 'status' + (isError ? ' error' : '');
+}
+
+function buildPrompt(userText){
+  const style = getActiveStyle();
+  if(isColoredStyle()){
+    return `${userText}, ${style}, vivid colors, high quality, detailed`;
+  }
+  return `${userText}, ${style}, fine line detail, high contrast, white paper background, professional sketch art`;
+}
