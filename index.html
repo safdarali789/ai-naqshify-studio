@@ -1,13 +1,242 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/index.css">
-  <script src="js/index.js"></script>
-  <title>html123</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Naqshify Studio — Free AI Art Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F6F1E7;
+    --ink: #23211D;
+    --wood: #8B5A2B;
+    --wood-dark: #5E3B1C;
+    --brass: #B8863B;
+    --sage: #7C8B73;
+    --line: #DDD3BE;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.012) 0px, rgba(0,0,0,0.012) 1px, transparent 1px, transparent 3px);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+  }
+
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:48px 20px 60px;
+  }
+
+  header{
+    text-align:center;
+    margin-bottom:46px;
+  }
+
+  .eyebrow{
+    font-size:0.75rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--sage);
+    font-weight:600;
+    margin-bottom:14px;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:2.6rem;
+    margin:0;
+    line-height:1.15;
+    color:var(--ink);
+  }
+
+  h1 .script{
+    font-family:'Caveat', cursive;
+    font-weight:700;
+    color:var(--wood-dark);
+    font-size:1.15em;
+    position:relative;
+    display:inline-block;
+  }
+
+  .underline-stroke{
+    display:block;
+    width:100%;
+    height:10px;
+    margin-top:-6px;
+  }
+
+  .underline-stroke path{
+    fill:none;
+    stroke:var(--brass);
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-dasharray:240;
+    stroke-dashoffset:240;
+    animation:draw-underline 1.1s ease-out 0.3s forwards;
+  }
+
+  @keyframes draw-underline{
+    to{ stroke-dashoffset:0; }
+  }
+
+  .subtitle{
+    font-size:1rem;
+    color:#5C5750;
+    margin:18px auto 0;
+    max-width:420px;
+    line-height:1.6;
+  }
+
+  .tools{
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+  }
+
+  .tool-card{
+    display:block;
+    text-decoration:none;
+    color:inherit;
+    border-radius:4px;
+    overflow:hidden;
+    position:relative;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:0 6px 18px rgba(35,33,29,0.10);
+  }
+
+  .tool-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 28px rgba(35,33,29,0.16);
+  }
+
+  .tool-card:active{ transform:translateY(-1px); }
+
+  .card-sketch{
+    background:#FFFFFF;
+    border:1.5px solid var(--ink);
+    padding:26px 24px;
+  }
+
+  .card-sketch::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:4px;
+    background:repeating-linear-gradient(90deg, var(--ink) 0 8px, transparent 8px 16px);
+    opacity:0.15;
+  }
+
+  .card-wood{
+    background:linear-gradient(135deg, #9C6A38, #6E4220);
+    color:var(--paper);
+    padding:26px 24px;
+    border:1.5px solid var(--wood-dark);
+  }
+
+  .card-wood::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background-image:repeating-linear-gradient(100deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 2px, transparent 2px, transparent 14px);
+    pointer-events:none;
+  }
+
+  .tool-icon{
+    font-size:30px;
+    display:block;
+    margin-bottom:10px;
+  }
+
+  .tool-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.35rem;
+    margin:0 0 6px;
+  }
+
+  .tool-desc{
+    font-size:0.92rem;
+    line-height:1.5;
+    margin:0 0 14px;
+    opacity:0.85;
+  }
+
+  .card-sketch .tool-desc{ color:#5C5750; }
+  .card-wood .tool-desc{ color:#F0E4D2; }
+
+  .tool-cta{
+    font-size:0.84rem;
+    font-weight:600;
+    letter-spacing:0.02em;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  .card-sketch .tool-cta{ color:var(--wood-dark); }
+  .card-wood .tool-cta{ color:var(--paper); }
+
+  .tool-cta .arrow{
+    transition:transform 0.2s ease;
+  }
+
+  .tool-card:hover .arrow{ transform:translateX(4px); }
+
+  footer{
+    text-align:center;
+    margin-top:50px;
+    color:#A89F8E;
+    font-size:0.78rem;
+  }
+
+  @media (max-width:420px){
+    h1{ font-size:2.1rem; }
+    .wrap{ padding:36px 16px 50px; }
+  }
+</style>
 </head>
 <body>
-	<h1>html123</h1>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">AI Naqshify Studio • Free • No Login</div>
+    <h1>Tools for the <span class="script">handmade</span> look<svg class="underline-stroke" viewBox="0 0 200 10" preserveAspectRatio="none"><path d="M5 6 Q 60 2, 100 6 T 195 5"/></svg></h1>
+    <p class="subtitle">Two small AI tools that turn your words into something that looks drawn or carved by hand — pick one below. More design tools coming soon.</p>
+  </header>
+
+  <div class="tools">
+
+    <a href="pencil-sketch-creator.html" class="tool-card card-sketch">
+      <span class="tool-icon">✏️</span>
+      <h2 class="tool-name">Pencil Sketch Creator</h2>
+      <p class="tool-desc">Describe an idea and get a graphite, charcoal, or ink-style sketch — or switch to a full color photo or painting.</p>
+      <span class="tool-cta">Open tool <span class="arrow">→</span></span>
+    </a>
+
+    <a href="wood-card-creator.html" class="tool-card card-wood">
+      <span class="tool-icon">🪵</span>
+      <h2 class="tool-name">Wood Engraving Card Creator</h2>
+      <p class="tool-desc">Generate a wooden card background and engrave your own name or message on top — for Eid, birthdays, or name plates.</p>
+      <span class="tool-cta">Open tool <span class="arrow">→</span></span>
+    </a>
+
+  </div>
+
+  <footer>
+    AI Naqshify Studio • Built with free public AI image generation
+  </footer>
+
+</div>
+
 </body>
 </html>
